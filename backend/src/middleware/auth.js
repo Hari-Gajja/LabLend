@@ -16,7 +16,8 @@ export const authenticate = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
     const secret = process.env.JWT_ACCESS_SECRET || 'lablend_default_secret_key_change_in_production';
 
-    const decoded = jwt.verify(token, secret);
+    // Verify token signature; ignoreExpiration allows persistent sessions until explicit sign-out
+    const decoded = jwt.verify(token, secret, { ignoreExpiration: true });
     const user = await User.findById(decoded.userId).populate('institution');
 
     if (!user) {
@@ -38,13 +39,6 @@ export const authenticate = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      return errorResponse(res, {
-        statusCode: 401,
-        message: 'Authentication token has expired',
-        code: 'TOKEN_EXPIRED',
-      });
-    }
     return errorResponse(res, {
       statusCode: 401,
       message: 'Invalid authentication token',
@@ -59,7 +53,7 @@ export const optionalAuth = async (req, res, next) => {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
       const secret = process.env.JWT_ACCESS_SECRET || 'lablend_default_secret_key_change_in_production';
-      const decoded = jwt.verify(token, secret);
+      const decoded = jwt.verify(token, secret, { ignoreExpiration: true });
       const user = await User.findById(decoded.userId).populate('institution');
       if (user && user.accountStatus !== 'suspended') {
         req.user = user;
@@ -73,6 +67,6 @@ export const optionalAuth = async (req, res, next) => {
 
 export const generateToken = (userId) => {
   const secret = process.env.JWT_ACCESS_SECRET || 'lablend_default_secret_key_change_in_production';
-  const expiresIn = process.env.JWT_ACCESS_EXPIRES_IN || '7d';
-  return jwt.sign({ userId }, secret, { expiresIn });
+  // Persistent session: token stays valid indefinitely until user explicitly logs out/signs out in the app
+  return jwt.sign({ userId }, secret);
 };
