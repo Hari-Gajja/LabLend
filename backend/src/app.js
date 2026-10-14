@@ -12,6 +12,7 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { successResponse, errorResponse } from './utils/apiResponse.js';
+import { connectDB } from './config/database.js';
 
 dotenv.config();
 
@@ -54,6 +55,16 @@ app.get('/api/v1/health', (req, res) => {
       version: '1.0.0',
     },
   });
+});
+
+// Ensure database is connected (essential for serverless execution)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Mount API routes

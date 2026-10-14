@@ -3,14 +3,18 @@ import mongoose from 'mongoose';
 let memoryServer = null;
 
 export const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
   const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/lablend';
   const forceMemory = process.env.USE_MEMORY_DB === 'true';
 
   if (!forceMemory) {
     try {
       const conn = await mongoose.connect(uri, {
-        serverSelectionTimeoutMS: 2000,
-        autoIndex: true,
+        serverSelectionTimeoutMS: 8000,
+        autoIndex: process.env.NODE_ENV !== 'production',
       });
       console.log(`[Database] MongoDB Connected: ${conn.connection.host}`);
       return conn;
