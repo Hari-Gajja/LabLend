@@ -26,9 +26,8 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Flutter / Dart
-flutter_app/.dart_tool/
-flutter_app/.flutter-plugins
+# Flutter Mobile App (excluded from repo)
+flutter_app/
 flutter_app/.flutter-plugins-dependencies
 flutter_app/.packages
 flutter_app/build/
