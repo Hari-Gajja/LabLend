@@ -34,17 +34,36 @@ export const createRequest = async (req, res, next) => {
       });
     }
 
+    // Normalize requestType to canonical 'rental' or 'purchase'
+    const normalizedRequestType = (requestType === 'buy' || requestType === 'purchase')
+      ? 'purchase'
+      : 'rental';
+
     // Verify listing supports the requested type
-    if (equipment.listingType !== 'both' && equipment.listingType !== requestType) {
+    const isRental = normalizedRequestType === 'rental';
+    const isPurchase = normalizedRequestType === 'purchase';
+
+    const supportsRental = equipment.listingType === 'both' || equipment.listingType === 'rent';
+    const supportsPurchase = equipment.listingType === 'both' || equipment.listingType === 'buy';
+
+    if (isRental && !supportsRental) {
       return errorResponse(res, {
         statusCode: 400,
-        message: `This equipment is only available for ${equipment.listingType}`,
+        message: `This equipment is only available for ${equipment.listingType === 'buy' ? 'purchase' : equipment.listingType}`,
+        code: 'INVALID_REQUEST_TYPE',
+      });
+    }
+
+    if (isPurchase && !supportsPurchase) {
+      return errorResponse(res, {
+        statusCode: 400,
+        message: `This equipment is only available for ${equipment.listingType === 'rent' ? 'rental' : equipment.listingType}`,
         code: 'INVALID_REQUEST_TYPE',
       });
     }
 
     // For rental requests, check for conflicting approved bookings
-    if (requestType === 'rental') {
+    if (isRental) {
       const conflicts = await checkRentalOverlap(equipmentId, rentalStartDate, rentalEndDate);
       if (conflicts.length > 0) {
         return errorResponse(res, {
@@ -60,10 +79,10 @@ export const createRequest = async (req, res, next) => {
       requesterInstitution: req.user.institution._id || req.user.institution,
       equipment: equipment._id,
       listingOwner: equipment.ownerUser,
-      requestType,
+      requestType: normalizedRequestType,
       requestedQuantity,
-      rentalStartDate: requestType === 'rental' ? new Date(rentalStartDate) : null,
-      rentalEndDate: requestType === 'rental' ? new Date(rentalEndDate) : null,
+      rentalStartDate: isRental && rentalStartDate ? new Date(rentalStartDate) : null,
+      rentalEndDate: isRental && rentalEndDate ? new Date(rentalEndDate) : null,
       intendedUse,
       message,
       status: 'pending',

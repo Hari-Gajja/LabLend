@@ -2,7 +2,11 @@ import { z } from 'zod';
 
 export const createRequestSchema = z.object({
   equipmentId: z.string().min(1, 'Equipment ID is required'),
-  requestType: z.enum(['rental', 'purchase']),
+  requestType: z.enum(['rental', 'purchase', 'rent', 'buy']).transform((val) => {
+    if (val === 'buy') return 'purchase';
+    if (val === 'rent') return 'rental';
+    return val;
+  }),
   requestedQuantity: z.number().int().min(1, 'Quantity must be at least 1').default(1),
   rentalStartDate: z.string().optional().nullable(),
   rentalEndDate: z.string().optional().nullable(),
