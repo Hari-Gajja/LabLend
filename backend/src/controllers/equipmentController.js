@@ -90,7 +90,7 @@ export const listEquipment = async (req, res, next) => {
     const [equipmentList, total] = await Promise.all([
       Equipment.find(filter)
         .populate('ownerInstitution', 'name type city state verificationStatus')
-        .populate('ownerUser', 'fullName email')
+        .populate('ownerUser', 'fullName email title department contactNumber')
         .sort(sortOptions)
         .skip(skip)
         .limit(take),
@@ -121,7 +121,7 @@ export const getEquipmentById = async (req, res, next) => {
       isArchived: false,
     })
       .populate('ownerInstitution', 'name type city state description verificationStatus contactEmail')
-      .populate('ownerUser', 'fullName email title department');
+      .populate('ownerUser', 'fullName email title department contactNumber');
 
     if (!equipment) {
       return errorResponse(res, {

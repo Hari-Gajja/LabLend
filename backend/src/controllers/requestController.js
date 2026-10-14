@@ -100,7 +100,7 @@ export const createRequest = async (req, res, next) => {
 
     const populated = await Request.findById(newRequest._id)
       .populate('equipment', 'title category images rentalPrice rentalPricingUnit purchasePrice')
-      .populate('requesterUser', 'fullName email title')
+      .populate('requesterUser', 'fullName email title department contactNumber')
       .populate('requesterInstitution', 'name city state verificationStatus');
 
     return successResponse(res, {
@@ -117,7 +117,7 @@ export const getSentRequests = async (req, res, next) => {
   try {
     const requests = await Request.find({ requesterUser: req.user._id })
       .populate('equipment', 'title category condition images rentalPrice rentalPricingUnit purchasePrice location')
-      .populate('listingOwner', 'fullName email')
+      .populate('listingOwner', 'fullName email title department contactNumber')
       .populate('requesterInstitution', 'name city state verificationStatus')
       .sort({ createdAt: -1 });
 
@@ -153,7 +153,7 @@ export const getRequestById = async (req, res, next) => {
       .populate('equipment')
       .populate('requesterUser', 'fullName email title department contactNumber')
       .populate('requesterInstitution', 'name type city state verificationStatus')
-      .populate('listingOwner', 'fullName email');
+      .populate('listingOwner', 'fullName email title department contactNumber');
 
     if (!request) {
       return errorResponse(res, {
