@@ -102,6 +102,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     runSpacing: 8,
                     children: [
                       ActionChip(
+                        avatar: const Icon(Icons.cloud_done, size: 16, color: AppColors.success),
+                        label: const Text('Cloud Production (Vercel)'),
+                        onPressed: () => _setPreset('https://backend-five-gamma-51.vercel.app/api/v1'),
+                      ),
+                      ActionChip(
                         label: const Text('Android Emulator (10.0.2.2:5000)'),
                         onPressed: () => _setPreset('http://10.0.2.2:5000/api/v1'),
                       ),
