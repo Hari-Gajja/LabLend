@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "seed": "node src/seeds/seed.js",
+    "clean": "node src/seeds/clear_database.js",
     "test": "vitest run",
     "test:e2e": "node tests/e2e_api_test.js"
   },

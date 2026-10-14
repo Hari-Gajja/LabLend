@@ -34,17 +34,6 @@ export const connectDB = async () => {
     });
     console.log(`[Database] Connected to In-Memory MongoDB: ${memoryUri}`);
 
-    // Automatically populate seed data for development / testing
-    try {
-      const { populateData } = await import('../seeds/seed.js');
-      if (populateData) {
-        await populateData();
-        console.log('[Database] In-memory database populated with seed records.');
-      }
-    } catch (seedErr) {
-      console.warn(`[Database Warning] Auto-seed failed: ${seedErr.message}`);
-    }
-
     return conn;
   } catch (memError) {
     console.error(`[Database Error] In-Memory MongoDB initialization failed: ${memError.message}`);

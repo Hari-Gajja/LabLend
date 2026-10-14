@@ -58,10 +58,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  void _fillDemoCredentials(String email, String password) {
-    _emailController.text = email;
-    _passwordController.text = password;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,67 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   isLoading: _isLoading,
                   onPressed: _handleLogin,
                 ),
-                const SizedBox(height: 24),
-
-                // Demo Accounts Box for Evaluators
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AppColors.paleSand.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.warmStone),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.bolt, size: 16, color: AppColors.warning),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Quick Demo Accounts (1-Tap Fill)',
-                            style: AppTypography.labelSmall.copyWith(
-                              color: AppColors.primaryInk,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          ActionChip(
-                            label: const Text('Stanford (Elena)'),
-                            backgroundColor: AppColors.pureWhite,
-                            onPressed: () => _fillDemoCredentials(
-                              'erostova@stanford.edu',
-                              'Password123!',
-                            ),
-                          ),
-                          ActionChip(
-                            label: const Text('MIT (Marcus)'),
-                            backgroundColor: AppColors.pureWhite,
-                            onPressed: () => _fillDemoCredentials(
-                              'mchen@mit.edu',
-                              'Password123!',
-                            ),
-                          ),
-                          ActionChip(
-                            label: const Text('Salk (Julian)'),
-                            backgroundColor: AppColors.pureWhite,
-                            onPressed: () => _fillDemoCredentials(
-                              'jvance@salk.edu',
-                              'Password123!',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 // Switch to Register
                 Center(
